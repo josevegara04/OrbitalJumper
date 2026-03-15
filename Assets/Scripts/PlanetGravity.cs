@@ -11,6 +11,14 @@ public class PlanetGravity : MonoBehaviour
     bool cameraMoved = false;
     private float orbitSpeed = 10f;
 
+    void Awake()
+    {
+        if (cameraTransform == null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if(!other.CompareTag("Satellite")) return;
