@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlanetManager
   planetPrefab: {fileID: 2629205890906707132, guid: a04423f9538014823b95c0a913022f20, type: 3}
-  firstPlanet: {fileID: 0}
+  firstPlanet: {fileID: 297672477}
   minDistance: 20
   maxDistance: 35
 --- !u!4 &735155456
