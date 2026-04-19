@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class PlanetManager : MonoBehaviour
 {
     public static PlanetManager Instance;
+    public Texture2D[] planetTextures;
 
     public GameObject planetPrefab;
     public GameObject firstPlanet;
@@ -17,11 +18,14 @@ public class PlanetManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-    } 
+    }
 
     void Start()
     {
         planets.Add(firstPlanet);
+
+        planetTextures = Resources.LoadAll<Texture2D>("Textures");
+        AssignRandomTexture(firstPlanet);
     }
 
     public void SpawnNextPlanet()
@@ -54,10 +58,12 @@ public class PlanetManager : MonoBehaviour
 
         GameObject newPlanet = Instantiate(planetPrefab, pos, Quaternion.identity);
 
+        AssignRandomTexture(newPlanet);
+
         planets.Add(newPlanet);
 
         PlanetGravity gravity = lastPlanet.GetComponent<PlanetGravity>();
-        if(gravity != null)
+        if (gravity != null)
         {
             gravity.nextPlanet = newPlanet.transform;
         }
@@ -75,4 +81,22 @@ public class PlanetManager : MonoBehaviour
 
         return (forward + randomOffset).normalized;
     }
+    
+    void AssignRandomTexture(GameObject planet)
+    {
+        Renderer rend = planet.GetComponent<Renderer>();
+
+        if (rend != null && planetTextures.Length > 0)
+        {
+            Texture2D randomTexture = planetTextures[Random.Range(0, planetTextures.Length)];
+
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            rend.GetPropertyBlock(block);
+
+            block.SetTexture("_MainTex", randomTexture);
+
+            rend.SetPropertyBlock(block);
+        }
+    }
+    
 }
