@@ -9,7 +9,7 @@ public class PlanetGravity : MonoBehaviour
     public Transform nextPlanet;
     public float cameraDistanceFactor = 0.5f;
     bool cameraMoved = false;
-    private float orbitSpeed = 10f;
+    private float orbitSpeed = 7f;
 
     void Awake()
     {

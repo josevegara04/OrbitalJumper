@@ -11,9 +11,11 @@ public class PlanetManager : MonoBehaviour
 
     List<GameObject> planets = new List<GameObject>();
 
-    public float minDistance = 20f;
+    public float minDistance = 5f;
     public float maxDistance = 35f;
     public float coneAngle = 30f; // degrees
+    public float distanceGrowth = 1.5f; // how much distance increases per planet
+    public float maxDistanceCap = 50f; // absolute maximum distance
 
     void Awake()
     {
@@ -52,7 +54,13 @@ public class PlanetManager : MonoBehaviour
         dir.y = 0f;
         dir.Normalize();
 
-        float distance = Random.Range(minDistance, maxDistance);
+        // Progressive distance (no randomness)
+        float growthFactor = planets.Count * distanceGrowth;
+
+        float targetDistance = minDistance + growthFactor;
+
+        // Clamp so it doesn't grow forever
+        float distance = Mathf.Min(targetDistance, maxDistanceCap);
 
         Vector3 pos = lastPlanet.transform.position + dir * distance;
 

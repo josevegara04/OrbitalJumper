@@ -20,7 +20,7 @@ public class SatelliteController : MonoBehaviour
     public float dragSensitivity = 0.0005f;
     public float maxDragDistance = 300f;
     public float maxDragAngle = 10f;
-    public float orbitLaunchForce = 15f;
+    public float orbitLaunchForce = 1f;
     bool launched = false;
     float lastDistance = Mathf.Infinity;
     float failTimer = 0f;
