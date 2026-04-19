@@ -12,6 +12,7 @@ public class PlanetManager : MonoBehaviour
 
     public float minDistance = 20f;
     public float maxDistance = 35f;
+    public float coneAngle = 30f; // degrees
 
     void Awake()
     {
@@ -27,8 +28,24 @@ public class PlanetManager : MonoBehaviour
     {
         GameObject lastPlanet = planets[planets.Count - 1];
 
-        Vector3 dir = Random.onUnitSphere;
-        dir.y = 0;
+        // Determine forward direction based on last two planets (or default)
+        Vector3 forwardDir;
+        if (planets.Count >= 2)
+        {
+            GameObject current = planets[planets.Count - 1];
+            GameObject previous = planets[planets.Count - 2];
+            forwardDir = (current.transform.position - previous.transform.position).normalized;
+        }
+        else
+        {
+            forwardDir = Vector3.forward;
+        }
+
+        // Get a direction within a cone around forwardDir
+        Vector3 dir = GetDirectionInCone(forwardDir, coneAngle);
+
+        // keep movement mostly on XZ plane
+        dir.y = 0f;
         dir.Normalize();
 
         float distance = Random.Range(minDistance, maxDistance);
@@ -44,5 +61,18 @@ public class PlanetManager : MonoBehaviour
         {
             gravity.nextPlanet = newPlanet.transform;
         }
+    }
+
+    Vector3 GetDirectionInCone(Vector3 forward, float angle)
+    {
+        float coneRadius = Mathf.Tan(angle * Mathf.Deg2Rad);
+
+        Vector3 randomOffset = new Vector3(
+            Random.Range(-coneRadius, coneRadius),
+            Random.Range(-coneRadius, coneRadius),
+            Random.Range(-coneRadius, coneRadius)
+        );
+
+        return (forward + randomOffset).normalized;
     }
 }
