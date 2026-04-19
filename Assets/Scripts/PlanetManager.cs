@@ -25,6 +25,7 @@ public class PlanetManager : MonoBehaviour
         planets.Add(firstPlanet);
 
         planetTextures = Resources.LoadAll<Texture2D>("Textures");
+        AssignRandomTexture(firstPlanet);
     }
 
     public void SpawnNextPlanet()
@@ -57,26 +58,12 @@ public class PlanetManager : MonoBehaviour
 
         GameObject newPlanet = Instantiate(planetPrefab, pos, Quaternion.identity);
 
-        Renderer rend = newPlanet.GetComponent<Renderer>();
-
-        if (rend != null && planetTextures.Length > 0)
-        {
-            Texture2D randomTexture = planetTextures[Random.Range(0, planetTextures.Length)];
-
-            // Use MaterialPropertyBlock to avoid creating material instances
-            MaterialPropertyBlock block = new MaterialPropertyBlock();
-            rend.GetPropertyBlock(block);
-
-            // IMPORTANT: matches your custom HLSL shader property name
-            block.SetTexture("_MainTex", randomTexture);
-
-            rend.SetPropertyBlock(block);
-        }
+        AssignRandomTexture(newPlanet);
 
         planets.Add(newPlanet);
 
         PlanetGravity gravity = lastPlanet.GetComponent<PlanetGravity>();
-        if(gravity != null)
+        if (gravity != null)
         {
             gravity.nextPlanet = newPlanet.transform;
         }
@@ -94,4 +81,22 @@ public class PlanetManager : MonoBehaviour
 
         return (forward + randomOffset).normalized;
     }
+    
+    void AssignRandomTexture(GameObject planet)
+    {
+        Renderer rend = planet.GetComponent<Renderer>();
+
+        if (rend != null && planetTextures.Length > 0)
+        {
+            Texture2D randomTexture = planetTextures[Random.Range(0, planetTextures.Length)];
+
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            rend.GetPropertyBlock(block);
+
+            block.SetTexture("_MainTex", randomTexture);
+
+            rend.SetPropertyBlock(block);
+        }
+    }
+    
 }
