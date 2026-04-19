@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class PlanetManager : MonoBehaviour
 {
     public static PlanetManager Instance;
+    public Texture2D[] planetTextures;
 
     public GameObject planetPrefab;
     public GameObject firstPlanet;
@@ -17,11 +18,13 @@ public class PlanetManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-    } 
+    }
 
     void Start()
     {
         planets.Add(firstPlanet);
+
+        planetTextures = Resources.LoadAll<Texture2D>("Textures");
     }
 
     public void SpawnNextPlanet()
@@ -53,6 +56,22 @@ public class PlanetManager : MonoBehaviour
         Vector3 pos = lastPlanet.transform.position + dir * distance;
 
         GameObject newPlanet = Instantiate(planetPrefab, pos, Quaternion.identity);
+
+        Renderer rend = newPlanet.GetComponent<Renderer>();
+
+        if (rend != null && planetTextures.Length > 0)
+        {
+            Texture2D randomTexture = planetTextures[Random.Range(0, planetTextures.Length)];
+
+            // Use MaterialPropertyBlock to avoid creating material instances
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            rend.GetPropertyBlock(block);
+
+            // IMPORTANT: matches your custom HLSL shader property name
+            block.SetTexture("_MainTex", randomTexture);
+
+            rend.SetPropertyBlock(block);
+        }
 
         planets.Add(newPlanet);
 
