@@ -24,6 +24,7 @@ public class PlanetGravity : MonoBehaviour
         if(!other.CompareTag("Satellite")) return;
         SatelliteController sc = other.GetComponent<SatelliteController>();
         sc.isOrbiting = true;
+        ScoreManager.Instance.AddScore(100);
 
         PlanetManager.Instance.SpawnNextPlanet();
         sc.nextPlanet = nextPlanet;
