@@ -928,7 +928,7 @@ MonoBehaviour:
   dragSensitivity: 0.01
   maxDragDistance: 300
   maxDragAngle: 10
-  orbitLaunchForce: 15
+  orbitLaunchForce: 12
   failDelay: 2
   cameraTransform: {fileID: 330585546}
   nextPlanet: {fileID: 0}
@@ -1018,9 +1018,11 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 5a265ff53890c4517b6f60130dac2964, type: 3}
   planetPrefab: {fileID: 2629205890906707132, guid: a04423f9538014823b95c0a913022f20, type: 3}
   firstPlanet: {fileID: 297672477}
-  minDistance: 20
+  minDistance: 10
   maxDistance: 35
-  coneAngle: 30
+  coneAngle: 40
+  distanceGrowth: 1.5
+  maxDistanceCap: 50
 --- !u!4 &735155456
 Transform:
   m_ObjectHideFlags: 0
