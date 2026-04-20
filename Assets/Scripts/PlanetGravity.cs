@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class PlanetGravity : MonoBehaviour
 {
@@ -21,13 +22,19 @@ public class PlanetGravity : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(!other.CompareTag("Satellite")) return;
+        if (!other.CompareTag("Satellite")) return;
         SatelliteController sc = other.GetComponent<SatelliteController>();
         sc.isOrbiting = true;
         ScoreManager.Instance.AddScore(100);
 
         PlanetManager.Instance.SpawnNextPlanet();
         sc.nextPlanet = nextPlanet;
+
+        if (!cameraMoved)
+        {
+            StartCoroutine(TriggerCameraMoveWithDelay(0f, transform));
+            cameraMoved = true;
+        }
     }
 
     void OnTriggerStay(Collider other)
@@ -36,7 +43,7 @@ public class PlanetGravity : MonoBehaviour
 
         // Verificar si el planeta está orbitando
         SatelliteController sc = other.GetComponent<SatelliteController>();
-        if(sc != null && !sc.isOrbiting)
+        if (sc != null && !sc.isOrbiting)
         {
             return;
         }
@@ -99,7 +106,7 @@ public class PlanetGravity : MonoBehaviour
                     rb.linearVelocity = tangent * orbitSpeed;
                 }
 
-                if(!cameraMoved && cameraTransform != null && nextPlanet != null)
+                /* if(!cameraMoved && cameraTransform != null && nextPlanet != null)
                 {
                     // camera distance depends on planet size
                     float cameraDistance = planetRadius * cameraDistanceFactor;
@@ -116,9 +123,48 @@ public class PlanetGravity : MonoBehaviour
                     StartCoroutine(MoveCameraSmooth(targetPosition, 1f));
 
                     cameraMoved = true;
-                }
+                } */
             }
         }
+    }
+    
+    void OnTriggerExit(Collider other)
+    {
+        cameraMoved = false;
+    }
+
+    IEnumerator TriggerCameraMoveWithDelay(float delay, Transform planet)
+
+    {
+
+        yield return new WaitForSeconds(delay);
+
+        if (cameraTransform == null || nextPlanet == null) yield break;
+
+        float planetRadius = 1f;
+
+        SphereCollider sphere = GetComponent<SphereCollider>();
+
+        if (sphere != null)
+
+        {
+
+            planetRadius = sphere.radius * transform.localScale.x;
+
+        }
+
+        float cameraDistance = planetRadius * cameraDistanceFactor;
+
+        Vector3 planetToNext = (nextPlanet.position - planet.position).normalized;
+
+        float cameraHeight = planetRadius * 2f;
+
+        Vector3 basePosition = planet.position - planetToNext * cameraDistance;
+
+        Vector3 targetPosition = basePosition + Vector3.up * cameraHeight;
+
+        StartCoroutine(MoveCameraSmooth(targetPosition, 1f));
+
     }
 
     IEnumerator MoveCameraSmooth(Vector3 targetPosition, float duration)
@@ -126,25 +172,35 @@ public class PlanetGravity : MonoBehaviour
         float elapsed = 0f;
         Vector3 startingPosition = cameraTransform.position; // Capture the start!
 
-        while (elapsed < duration)
+        Vector3 velocity = Vector3.zero;
+
+        while (Vector3.Distance(cameraTransform.position, targetPosition) > 0.01f)
         {
-            elapsed += Time.deltaTime;
-            
-            // This gives us a normalized value (0.0 to 1.0)
-            float t = elapsed / duration;
+            float distance = Vector3.Distance(cameraTransform.position, targetPosition);
+            float smoothTime = Mathf.Lerp(0.6f, 0.2f, 1 - (distance / 20f));
 
-            // SmoothStep removes the "jumpy" start and "abrupt" finish
-            float smoothT = Mathf.SmoothStep(0f, 1f, t);
-
-            cameraTransform.position = Vector3.Lerp(
-                startingPosition, 
-                targetPosition, 
-                smoothT
+            cameraTransform.position = Vector3.SmoothDamp(
+                cameraTransform.position,
+                targetPosition,
+                ref velocity,
+                smoothTime // este valor controla suavidad
             );
 
             if (nextPlanet != null)
             {
-                cameraTransform.LookAt(nextPlanet);
+                Vector3 direction = (nextPlanet.position - cameraTransform.position).normalized;
+
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+                cameraTransform.rotation = Quaternion.Slerp(
+
+                    cameraTransform.rotation,
+
+                    targetRotation,
+
+                    Time.deltaTime * 5f // velocidad de rotación
+
+                );
             }
 
             yield return null;
