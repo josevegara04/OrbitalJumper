@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Unity.VisualScripting;
 
+// Handles gravity, orbital behavior, and camera transitions when the satellite interacts with a planet.
 public class PlanetGravity : MonoBehaviour
 {
     public float gravityStrength = 20f;
@@ -12,6 +13,7 @@ public class PlanetGravity : MonoBehaviour
     bool cameraMoved = false;
     private float orbitSpeed = 7f;
 
+    // Ensures the camera reference is assigned at runtime if not set manually.
     void Awake()
     {
         if (cameraTransform == null)
@@ -20,6 +22,8 @@ public class PlanetGravity : MonoBehaviour
         }
     }
 
+    // Triggered when the satellite reaches the planet. Sets orbit state, updates score, spawns next planet,
+    // and initiates camera transition.
     void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Satellite")) return;
@@ -37,6 +41,7 @@ public class PlanetGravity : MonoBehaviour
         }
     }
 
+    // Applies gravity and enforces orbital motion while the satellite remains within the planet's influence.
     void OnTriggerStay(Collider other)
     {
         if (!other.CompareTag("Satellite")) return;
@@ -105,73 +110,38 @@ public class PlanetGravity : MonoBehaviour
 
                     rb.linearVelocity = tangent * orbitSpeed;
                 }
-
-                /* if(!cameraMoved && cameraTransform != null && nextPlanet != null)
-                {
-                    // camera distance depends on planet size
-                    float cameraDistance = planetRadius * cameraDistanceFactor;
-
-                    // direction from planet1 to planet2
-                    Vector3 planetToNext = (nextPlanet.position - transform.position).normalized;
-
-                    float cameraHeight = planetRadius * 2f;
-                    UnityEngine.Vector3 basePosition = transform.position - planetToNext * cameraDistance;
-
-                    Vector3 targetPosition = basePosition + UnityEngine.Vector3.up * cameraHeight;
-
-                    // move camera smoothly instead of teleporting
-                    StartCoroutine(MoveCameraSmooth(targetPosition, 1f));
-
-                    cameraMoved = true;
-                } */
             }
         }
     }
     
+    // Resets camera movement state when the satellite leaves the planet's trigger.
     void OnTriggerExit(Collider other)
     {
         cameraMoved = false;
     }
 
+    // Delays camera movement slightly to allow physics and next planet setup to stabilize.
     IEnumerator TriggerCameraMoveWithDelay(float delay, Transform planet)
-
     {
-
         yield return new WaitForSeconds(delay);
-
         if (cameraTransform == null || nextPlanet == null) yield break;
-
         float planetRadius = 1f;
-
         SphereCollider sphere = GetComponent<SphereCollider>();
-
         if (sphere != null)
-
         {
-
             planetRadius = sphere.radius * transform.localScale.x;
-
         }
-
         float cameraDistance = planetRadius * cameraDistanceFactor;
-
         Vector3 planetToNext = (nextPlanet.position - planet.position).normalized;
-
         float cameraHeight = planetRadius * 2f;
-
         Vector3 basePosition = planet.position - planetToNext * cameraDistance;
-
         Vector3 targetPosition = basePosition + Vector3.up * cameraHeight;
-
-        StartCoroutine(MoveCameraSmooth(targetPosition, 1f));
-
+        StartCoroutine(MoveCameraSmooth(targetPosition));
     }
 
-    IEnumerator MoveCameraSmooth(Vector3 targetPosition, float duration)
+    // Smoothly moves and rotates the camera towards the next planet using damped motion and interpolation.
+    IEnumerator MoveCameraSmooth(Vector3 targetPosition)
     {
-        float elapsed = 0f;
-        Vector3 startingPosition = cameraTransform.position; // Capture the start!
-
         Vector3 velocity = Vector3.zero;
 
         while (Vector3.Distance(cameraTransform.position, targetPosition) > 0.01f)
@@ -193,13 +163,9 @@ public class PlanetGravity : MonoBehaviour
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
 
                 cameraTransform.rotation = Quaternion.Slerp(
-
                     cameraTransform.rotation,
-
                     targetRotation,
-
                     Time.deltaTime * 5f // velocidad de rotación
-
                 );
             }
 
