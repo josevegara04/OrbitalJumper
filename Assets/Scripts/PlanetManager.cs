@@ -17,6 +17,7 @@ public class PlanetManager : MonoBehaviour
     public float distanceGrowth = 1.5f; // how much distance increases per planet
     public float maxDistanceCap = 50f; // absolute maximum distance
     public GameObject floatingTextPrefab;
+    public int maxPlanets = 5;
 
     void Awake()
     {
@@ -77,6 +78,7 @@ public class PlanetManager : MonoBehaviour
         AssignRandomTexture(newPlanet);
 
         planets.Add(newPlanet);
+        DestroyOldPlanet();
 
         PlanetGravity gravity = lastPlanet.GetComponent<PlanetGravity>();
         if (gravity != null)
@@ -97,7 +99,7 @@ public class PlanetManager : MonoBehaviour
 
         return (forward + randomOffset).normalized;
     }
-    
+
     void AssignRandomTexture(GameObject planet)
     {
         Renderer rend = planet.GetComponent<Renderer>();
@@ -115,4 +117,21 @@ public class PlanetManager : MonoBehaviour
         }
     }
     
+    void DestroyOldPlanet()
+    {
+        if (planets.Count <= maxPlanets)
+        {
+            return;
+        }
+        else
+        {
+            GameObject oldestPlanet = planets[0];
+            planets.RemoveAt(0);
+
+            if (oldestPlanet != null)
+            {
+                Destroy(oldestPlanet);
+            }
+        }
+    }
 }
