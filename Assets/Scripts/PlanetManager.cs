@@ -16,10 +16,18 @@ public class PlanetManager : MonoBehaviour
     public float coneAngle = 50f; // degrees
     public float distanceGrowth = 1.5f; // how much distance increases per planet
     public float maxDistanceCap = 50f; // absolute maximum distance
+    public GameObject floatingTextPrefab;
 
     void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
