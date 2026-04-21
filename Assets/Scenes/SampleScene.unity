@@ -173,10 +173,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 297672483}
+  - component: {fileID: 297672479}
   - component: {fileID: 297672482}
   - component: {fileID: 297672481}
   - component: {fileID: 297672480}
-  - component: {fileID: 297672479}
   - component: {fileID: 297672478}
   m_Layer: 0
   m_Name: First Planet
@@ -591,15 +591,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Points:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69044dce3e7d74eb180e7fb7d7210c37, type: 2}
+  m_sharedMaterial: {fileID: 5279886317093302047, guid: 69044dce3e7d74eb180e7fb7d7210c37, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4294967040
+  m_fontColor: {r: 0, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -655,7 +655,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -40.272217, w: 0}
+  m_margin: {x: 0, y: 0, z: -101.12253, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1023,6 +1023,7 @@ MonoBehaviour:
   coneAngle: 40
   distanceGrowth: 1.5
   maxDistanceCap: 50
+  floatingTextPrefab: {fileID: 8577731679381825676, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
 --- !u!4 &735155456
 Transform:
   m_ObjectHideFlags: 0
@@ -1275,6 +1276,103 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1001 &697138073121227150
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 850
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 414.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 425
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 207.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7795999512839179961, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577731679381825676, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
+      propertyPath: m_Name
+      value: Canvas
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1288,3 +1386,4 @@ SceneRoots:
   - {fileID: 322776299}
   - {fileID: 109118371}
   - {fileID: 908345605}
+  - {fileID: 697138073121227150}

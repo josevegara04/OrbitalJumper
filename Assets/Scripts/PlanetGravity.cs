@@ -31,6 +31,13 @@ public class PlanetGravity : MonoBehaviour
         sc.isOrbiting = true;
         ScoreManager.Instance.AddScore(100);
 
+        UnityEngine.Vector3 spawnPosition = other.transform.position + Vector3.up * 2f;
+        Instantiate(
+            PlanetManager.Instance.floatingTextPrefab,
+            spawnPosition,
+            Quaternion.identity
+        );
+
         PlanetManager.Instance.SpawnNextPlanet();
         sc.nextPlanet = nextPlanet;
 

@@ -52,7 +52,6 @@ public class SatelliteController : MonoBehaviour
         // Verificar si el satélite está orbitando en un planeta
         if (isOrbiting)
         {
-            Debug.Log("is orbiting!");
             if (Mouse.current.leftButton.wasPressedThisFrame && nextPlanet != null)
             {
                 print("expulsando");
@@ -63,8 +62,6 @@ public class SatelliteController : MonoBehaviour
         if (launched && !isOrbiting && nextPlanet != null)
         {
             currentDistance = UnityEngine.Vector3.Distance(transform.position, nextPlanet.position);
-            Debug.Log($"Distance: {currentDistance}");
-            Debug.Log($"Last distance: {lastDistance}");
 
             SphereCollider sphere = nextPlanet.GetComponent<SphereCollider>();
 
