@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 public class PlanetGravity : MonoBehaviour
 {
     public float gravityStrength = 20f;
-    public float orbitDistance = 4f;
+    public float orbitDistance = 10f;
     public Transform cameraTransform;
     public Transform nextPlanet;
     public float cameraDistanceFactor = 0.5f;
