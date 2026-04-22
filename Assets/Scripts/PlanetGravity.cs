@@ -1,12 +1,13 @@
 using UnityEngine;
 using System.Collections;
 using Unity.VisualScripting;
+using System.Diagnostics;
 
 // Handles gravity, orbital behavior, and camera transitions when the satellite interacts with a planet.
 public class PlanetGravity : MonoBehaviour
 {
     public float gravityStrength = 20f;
-    public float orbitDistance = 10f;
+    public float orbitDistance = 4f;
     public Transform cameraTransform;
     public Transform nextPlanet;
     public float cameraDistanceFactor = 0.5f;
@@ -96,7 +97,7 @@ public class PlanetGravity : MonoBehaviour
             // if the surfaces touch -> crash
             if (distance <= planetRadius + satelliteRadius)
             {
-                Debug.Log("CRASH");
+                UnityEngine.Debug.Log("CRASH");
                 return;
             }
             else
@@ -180,5 +181,18 @@ public class PlanetGravity : MonoBehaviour
         }
 
         cameraTransform.position = targetPosition;
+    }
+
+// Function that activates when satellite touches the smaller satellite's sphere collider
+    void OnCollisionEnter(Collision collision)
+    {
+        if (!collision.gameObject.CompareTag("Satellite")) return;
+
+        SatelliteController sc = collision.gameObject.GetComponent<SatelliteController>();
+
+        if (sc != null && sc.isOrbiting)
+        {
+            sc.RestartGame();
+        }
     }
 }

@@ -197,7 +197,7 @@ public class SatelliteController : MonoBehaviour
         failTimer = 0f;
     }
     
-        void RestartGame()
+        public void RestartGame()
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
