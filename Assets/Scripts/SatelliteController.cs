@@ -146,6 +146,17 @@ public class SatelliteController : MonoBehaviour
             Launch();
             isDragging = false;
         }
+
+        // Logic for LineRenderer visuals
+        if (isDragging && aimLine.enabled)
+        {
+            float pulse = Mathf.Sin(Time.time * 10f) * 0.5f + 0.5f;
+            float alpha = Mathf.Lerp(0.3f, 1f, pulse);
+
+            // ✅ Asigna el color completo, no solo el alpha
+            aimLine.startColor = new Color(1f, 1f, 1f, alpha);
+            aimLine.endColor   = new Color(1f, 1f, 1f, 0f);
+        }
     }
 
     void Launch()
@@ -186,7 +197,7 @@ public class SatelliteController : MonoBehaviour
         failTimer = 0f;
     }
     
-        void RestartGame()
+        public void RestartGame()
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
