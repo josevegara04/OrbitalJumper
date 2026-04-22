@@ -13,6 +13,7 @@ public class PlanetGravity : MonoBehaviour
     public float cameraDistanceFactor = 0.5f;
     bool cameraMoved = false;
     private float orbitSpeed = 7f;
+    public DragBehavour dragUI;
 
     // Ensures the camera reference is assigned at runtime if not set manually.
     void Awake()
@@ -38,6 +39,12 @@ public class PlanetGravity : MonoBehaviour
             spawnPosition,
             Quaternion.identity
         );
+
+        if (!DragBehavour.Instance.firstLandingDone)
+        {
+            DragBehavour.Instance.firstLandingDone = true;
+            DragBehavour.Instance.HideText();
+        }
 
         PlanetManager.Instance.SpawnNextPlanet();
         sc.nextPlanet = nextPlanet;
