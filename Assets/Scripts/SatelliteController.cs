@@ -19,6 +19,7 @@ public class SatelliteController : MonoBehaviour
     public float launchPower = 0.1f;
     public float dragSensitivity = 0.0005f;
     public float maxDragDistance = 300f;
+    public float minDragDistance = 300f;
     public float maxDragAngle = 10f;
     public float orbitLaunchForce = 1f;
     bool launched = false;
@@ -143,7 +144,20 @@ public class SatelliteController : MonoBehaviour
         if (Mouse.current.leftButton.wasReleasedThisFrame && isDragging && !launched)
         {
             endMousePosition = Mouse.current.position.ReadValue();
-            Launch();
+            
+            UnityEngine.Vector2 dragVector = (UnityEngine.Vector2)(startMousePosition - endMousePosition);
+
+            if (dragVector.magnitude < minDragDistance)
+            {
+                // No fue suficiente arrastre → volver a la posición inicial
+                transform.position = startSatellitePosition;
+                aimLine.enabled = false;
+            }
+            else
+            {
+                Launch();
+            }
+
             isDragging = false;
         }
 
