@@ -1072,7 +1072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SatelliteController
   isOrbiting: 0
-  launchPower: 0.02
+  launchPower: 0.05
   dragSensitivity: 0.01
   maxDragDistance: 300
   minDragDistance: 250

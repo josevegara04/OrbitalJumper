@@ -34,6 +34,8 @@ public class SatelliteController : MonoBehaviour
     UnityEngine.Vector3 cameraOffset;
 
     public LineRenderer aimLine;
+    UnityEngine.Vector3 finalAimDirection;
+    float finalForce;
 
     void Start()
     {
@@ -135,6 +137,9 @@ public class SatelliteController : MonoBehaviour
                 dragScreen = new UnityEngine.Vector2(-aimDirection.x, -aimDirection.z);
             }
 
+            finalAimDirection = aimDirection.normalized;
+            finalForce = dragScreen.magnitude;
+
             // mover satélite usando el vector ya limitado
             UnityEngine.Vector3 move = new UnityEngine.Vector3(dragScreen.x, 0, dragScreen.y) * dragSensitivity;
             transform.position = startSatellitePosition + move;
@@ -182,15 +187,7 @@ public class SatelliteController : MonoBehaviour
 
     void Launch()
     {
-        UnityEngine.Vector2 dragVector = startMousePosition - endMousePosition;
-
-        UnityEngine.Vector3 launchDirection = new UnityEngine.Vector3(
-            dragVector.x,
-            0,
-            dragVector.y
-        );
-
-        rb.AddForce(launchDirection * launchPower, ForceMode.Impulse);
+        rb.AddForce(finalAimDirection * finalForce * launchPower, ForceMode.Impulse);
         launched = true;
         aimLine.enabled = false;
     }
