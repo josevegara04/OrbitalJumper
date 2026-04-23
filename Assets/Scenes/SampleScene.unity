@@ -181,7 +181,7 @@ GameObject:
   - component: {fileID: 297672478}
   m_Layer: 0
   m_Name: First Planet
-  m_TagString: Untagged
+  m_TagString: FirstPlanet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1082,6 +1082,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 330585546}
   nextPlanet: {fileID: 0}
   aimLine: {fileID: 632842872}
+  loseAnimation: {fileID: 1811173826}
 --- !u!54 &632842874
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1833,6 +1834,51 @@ CapsuleCollider:
   m_Height: 0.02
   m_Direction: 0
   m_Center: {x: -0.00000017038415, y: -0.0000016754013, z: 0.0025674857}
+--- !u!1 &1811173825
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1811173827}
+  - component: {fileID: 1811173826}
+  m_Layer: 0
+  m_Name: LoseAnimation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1811173826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811173825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03349ccdebac496cb04e652995f4042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LoseAnimation
+  duration: 1
+--- !u!4 &1811173827
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811173825}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -73.03927, y: 0, z: 70.15789}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1901843636
 GameObject:
   m_ObjectHideFlags: 0
@@ -2113,3 +2159,4 @@ SceneRoots:
   - {fileID: 1083981432}
   - {fileID: 1901843640}
   - {fileID: 1391921636}
+  - {fileID: 1811173827}
