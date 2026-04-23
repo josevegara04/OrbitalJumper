@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Numerics;
 using NUnit.Framework;
 using TMPro;
@@ -58,6 +59,12 @@ public class SatelliteController : MonoBehaviour
                 print("expulsando");
                 LaunchFromOrbit();
             }
+        }
+
+        GameObject first = GameObject.FindWithTag("FirstPlanet");
+        if (nextPlanet == null && first != null)
+        {
+            nextPlanet = first.transform;
         }
 
         if (launched && !isOrbiting && nextPlanet != null)
@@ -211,9 +218,23 @@ public class SatelliteController : MonoBehaviour
         failTimer = 0f;
     }
     
-        public void RestartGame()
+    public LoseAnimation loseAnimation;
+
+    public void RestartGame()
+    {
+        StartCoroutine(LoseSequence());
+    }
+
+    IEnumerator LoseSequence()
+    {
+        if (loseAnimation != null)
         {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            yield return StartCoroutine(loseAnimation.PlayLoseAnimation());
         }
+
+        yield return new WaitForSeconds(0.2f);
+
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
