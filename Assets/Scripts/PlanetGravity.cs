@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
+using System.Diagnostics;
 
+// Handles gravity, orbital behavior, and camera transitions when the satellite interacts with a planet.
 public class PlanetGravity : MonoBehaviour
 {
     public float gravityStrength = 20f;
@@ -9,8 +12,10 @@ public class PlanetGravity : MonoBehaviour
     public Transform nextPlanet;
     public float cameraDistanceFactor = 0.5f;
     bool cameraMoved = false;
-    private float orbitSpeed = 10f;
+    private float orbitSpeed = 7f;
+    public DragBehavour dragUI;
 
+    // Ensures the camera reference is assigned at runtime if not set manually.
     void Awake()
     {
         if (cameraTransform == null)
@@ -19,23 +24,46 @@ public class PlanetGravity : MonoBehaviour
         }
     }
 
+    // Triggered when the satellite reaches the planet. Sets orbit state, updates score, spawns next planet,
+    // and initiates camera transition.
     void OnTriggerEnter(Collider other)
     {
-        if(!other.CompareTag("Satellite")) return;
+        if (!other.CompareTag("Satellite")) return;
         SatelliteController sc = other.GetComponent<SatelliteController>();
         sc.isOrbiting = true;
+        ScoreManager.Instance.AddScore(100);
+
+        UnityEngine.Vector3 spawnPosition = other.transform.position + Vector3.up * 2f;
+        Instantiate(
+            PlanetManager.Instance.floatingTextPrefab,
+            spawnPosition,
+            Quaternion.identity
+        );
+
+        if (!DragBehavour.Instance.firstLandingDone)
+        {
+            DragBehavour.Instance.firstLandingDone = true;
+            DragBehavour.Instance.HideText();
+        }
 
         PlanetManager.Instance.SpawnNextPlanet();
         sc.nextPlanet = nextPlanet;
+
+        if (!cameraMoved)
+        {
+            StartCoroutine(TriggerCameraMoveWithDelay(0f, transform));
+            cameraMoved = true;
+        }
     }
 
+    // Applies gravity and enforces orbital motion while the satellite remains within the planet's influence.
     void OnTriggerStay(Collider other)
     {
         if (!other.CompareTag("Satellite")) return;
 
         // Verificar si el planeta está orbitando
         SatelliteController sc = other.GetComponent<SatelliteController>();
-        if(sc != null && !sc.isOrbiting)
+        if (sc != null && !sc.isOrbiting)
         {
             return;
         }
@@ -76,7 +104,7 @@ public class PlanetGravity : MonoBehaviour
             // if the surfaces touch -> crash
             if (distance <= planetRadius + satelliteRadius)
             {
-                Debug.Log("CRASH");
+                UnityEngine.Debug.Log("CRASH");
                 return;
             }
             else
@@ -97,58 +125,81 @@ public class PlanetGravity : MonoBehaviour
 
                     rb.linearVelocity = tangent * orbitSpeed;
                 }
-
-                if(!cameraMoved && cameraTransform != null && nextPlanet != null)
-                {
-                    // camera distance depends on planet size
-                    float cameraDistance = planetRadius * cameraDistanceFactor;
-
-                    // direction from planet1 to planet2
-                    Vector3 planetToNext = (nextPlanet.position - transform.position).normalized;
-
-                    float cameraHeight = planetRadius * 2f;
-                    UnityEngine.Vector3 basePosition = transform.position - planetToNext * cameraDistance;
-
-                    Vector3 targetPosition = basePosition + UnityEngine.Vector3.up * cameraHeight;
-
-                    // move camera smoothly instead of teleporting
-                    StartCoroutine(MoveCameraSmooth(targetPosition, 1f));
-
-                    cameraMoved = true;
-                }
             }
         }
     }
-
-    IEnumerator MoveCameraSmooth(Vector3 targetPosition, float duration)
+    
+    // Resets camera movement state when the satellite leaves the planet's trigger.
+    void OnTriggerExit(Collider other)
     {
-        float elapsed = 0f;
-        Vector3 startingPosition = cameraTransform.position; // Capture the start!
+        cameraMoved = false;
+    }
 
-        while (elapsed < duration)
+    // Delays camera movement slightly to allow physics and next planet setup to stabilize.
+    IEnumerator TriggerCameraMoveWithDelay(float delay, Transform planet)
+    {
+        yield return new WaitForSeconds(delay);
+        if (cameraTransform == null || nextPlanet == null) yield break;
+        float planetRadius = 1f;
+        SphereCollider sphere = GetComponent<SphereCollider>();
+        if (sphere != null)
         {
-            elapsed += Time.deltaTime;
-            
-            // This gives us a normalized value (0.0 to 1.0)
-            float t = elapsed / duration;
+            planetRadius = sphere.radius * transform.localScale.x;
+        }
+        float cameraDistance = planetRadius * cameraDistanceFactor;
+        Vector3 planetToNext = (nextPlanet.position - planet.position).normalized;
+        float cameraHeight = planetRadius * 2f;
+        Vector3 basePosition = planet.position - planetToNext * cameraDistance;
+        Vector3 targetPosition = basePosition + Vector3.up * cameraHeight;
+        StartCoroutine(MoveCameraSmooth(targetPosition));
+    }
 
-            // SmoothStep removes the "jumpy" start and "abrupt" finish
-            float smoothT = Mathf.SmoothStep(0f, 1f, t);
+    // Smoothly moves and rotates the camera towards the next planet using damped motion and interpolation.
+    IEnumerator MoveCameraSmooth(Vector3 targetPosition)
+    {
+        Vector3 velocity = Vector3.zero;
 
-            cameraTransform.position = Vector3.Lerp(
-                startingPosition, 
-                targetPosition, 
-                smoothT
+        while (Vector3.Distance(cameraTransform.position, targetPosition) > 0.01f)
+        {
+            float distance = Vector3.Distance(cameraTransform.position, targetPosition);
+            float smoothTime = Mathf.Lerp(0.6f, 0.2f, 1 - (distance / 20f));
+
+            cameraTransform.position = Vector3.SmoothDamp(
+                cameraTransform.position,
+                targetPosition,
+                ref velocity,
+                smoothTime // este valor controla suavidad
             );
 
             if (nextPlanet != null)
             {
-                cameraTransform.LookAt(nextPlanet);
+                Vector3 direction = (nextPlanet.position - cameraTransform.position).normalized;
+
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+                cameraTransform.rotation = Quaternion.Slerp(
+                    cameraTransform.rotation,
+                    targetRotation,
+                    Time.deltaTime * 5f // velocidad de rotación
+                );
             }
 
             yield return null;
         }
 
         cameraTransform.position = targetPosition;
+    }
+
+// Function that activates when satellite touches the smaller satellite's sphere collider
+    void OnCollisionEnter(Collision collision)
+    {
+        if (!collision.gameObject.CompareTag("Satellite")) return;
+
+        SatelliteController sc = collision.gameObject.GetComponent<SatelliteController>();
+
+        if (sc != null && sc.isOrbiting)
+        {
+            sc.RestartGame();
+        }
     }
 }

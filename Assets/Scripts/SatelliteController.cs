@@ -1,9 +1,12 @@
+using System;
+using System.Collections;
 using System.Numerics;
 using NUnit.Framework;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class SatelliteController : MonoBehaviour
 {
@@ -17,28 +20,35 @@ public class SatelliteController : MonoBehaviour
     public float launchPower = 0.1f;
     public float dragSensitivity = 0.0005f;
     public float maxDragDistance = 300f;
+    public float minDragDistance = 300f;
     public float maxDragAngle = 10f;
-    public float orbitLaunchForce = 15f;
+    public float orbitLaunchForce = 1f;
     bool launched = false;
+    float lastDistance = Mathf.Infinity;
+    float failTimer = 0f;
+    public float failDelay = 2f;
+    float currentDistance = 0f;
 
     public Transform cameraTransform;
     public Transform nextPlanet;
     UnityEngine.Vector3 cameraOffset;
 
     public LineRenderer aimLine;
+    UnityEngine.Vector3 finalAimDirection;
+    float finalForce;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
 
 
-        if(cameraTransform != null)
+        if (cameraTransform != null)
         {
             cameraOffset = cameraTransform.position - transform.position;
         }
 
         // Desactivar la línea de proyección del satélite.
-        aimLine.enabled = false;   
+        aimLine.enabled = false;
     }
 
     void Update()
@@ -46,21 +56,44 @@ public class SatelliteController : MonoBehaviour
         // Verificar si el satélite está orbitando en un planeta
         if (isOrbiting)
         {
-            Debug.Log("is orbiting!");
-            if(Mouse.current.leftButton.wasPressedThisFrame && nextPlanet != null)
+            if (Mouse.current.leftButton.wasPressedThisFrame && nextPlanet != null)
             {
                 print("expulsando");
                 LaunchFromOrbit();
             }
         }
 
-        if (launched)
+        GameObject first = GameObject.FindWithTag("FirstPlanet");
+        if (nextPlanet == null && first != null)
         {
-            return;
+            nextPlanet = first.transform;
+        }
+
+        if (launched && !isOrbiting && nextPlanet != null)
+        {
+            currentDistance = UnityEngine.Vector3.Distance(transform.position, nextPlanet.position);
+
+            SphereCollider sphere = nextPlanet.GetComponent<SphereCollider>();
+
+            float planetRadius = sphere.radius * nextPlanet.localScale.x;
+            float maxDistance = planetRadius * 8f;
+
+            if (currentDistance > lastDistance)
+            {
+                failTimer += Time.deltaTime;
+
+                RestartGame();
+            }
+            else
+            {
+                failTimer = 0f;
+            }
+
+            lastDistance = currentDistance;
         }
 
         // Cuando se presiona el mouse
-        if(Mouse.current.leftButton.wasPressedThisFrame && !launched)
+        if (Mouse.current.leftButton.wasPressedThisFrame && !launched)
         {
             // Se guarda la posición inicial del mouse y del satélite.
             startMousePosition = Mouse.current.position.ReadValue();
@@ -104,6 +137,9 @@ public class SatelliteController : MonoBehaviour
                 dragScreen = new UnityEngine.Vector2(-aimDirection.x, -aimDirection.z);
             }
 
+            finalAimDirection = aimDirection.normalized;
+            finalForce = dragScreen.magnitude;
+
             // mover satélite usando el vector ya limitado
             UnityEngine.Vector3 move = new UnityEngine.Vector3(dragScreen.x, 0, dragScreen.y) * dragSensitivity;
             transform.position = startSatellitePosition + move;
@@ -111,43 +147,59 @@ public class SatelliteController : MonoBehaviour
             aimLine.SetPosition(0, transform.position);
             aimLine.SetPosition(1, transform.position + aimDirection * 0.01f);
 
-            if(cameraTransform != null)
+            if (cameraTransform != null)
             {
                 cameraTransform.position = cameraOffset + transform.position;
             }
         }
-        
-        if(Mouse.current.leftButton.wasReleasedThisFrame && isDragging && !launched)
+
+        if (Mouse.current.leftButton.wasReleasedThisFrame && isDragging && !launched)
         {
             endMousePosition = Mouse.current.position.ReadValue();
-            Launch();
+            
+            UnityEngine.Vector2 dragVector = (UnityEngine.Vector2)(startMousePosition - endMousePosition);
+
+            if (dragVector.magnitude < minDragDistance)
+            {
+                // No fue suficiente arrastre → volver a la posición inicial
+                transform.position = startSatellitePosition;
+                aimLine.enabled = false;
+            }
+            else
+            {
+                Launch();
+            }
+
             isDragging = false;
+        }
+
+        // Logic for LineRenderer visuals
+        if (isDragging && aimLine.enabled)
+        {
+            float pulse = Mathf.Sin(Time.time * 10f) * 0.5f + 0.5f;
+            float alpha = Mathf.Lerp(0.3f, 1f, pulse);
+
+            // ✅ Asigna el color completo, no solo el alpha
+            aimLine.startColor = new Color(1f, 1f, 1f, alpha);
+            aimLine.endColor   = new Color(1f, 1f, 1f, 0f);
         }
     }
 
     void Launch()
     {
-        UnityEngine.Vector2 dragVector = startMousePosition - endMousePosition;
-
-        UnityEngine.Vector3 launchDirection = new UnityEngine.Vector3(
-            dragVector.x,
-            0,
-            dragVector.y
-        );
-
-        rb.AddForce(launchDirection * launchPower, ForceMode.Impulse);
+        rb.AddForce(finalAimDirection * finalForce * launchPower, ForceMode.Impulse);
         launched = true;
         aimLine.enabled = false;
     }
 
     void LaunchFromOrbit()
     {
-        if(nextPlanet == null) return;
+        if (nextPlanet == null) return;
 
         // Dirección hacia el siguiente planeta
         UnityEngine.Vector3 launchDirection = rb.linearVelocity.normalized;
 
-        if(launchDirection.sqrMagnitude < 0.001f)
+        if (launchDirection.sqrMagnitude < 0.001f)
         {
             launchDirection = transform.forward;
         }
@@ -159,5 +211,27 @@ public class SatelliteController : MonoBehaviour
         rb.AddForce(launchDirection * orbitLaunchForce, ForceMode.Impulse);
 
         isOrbiting = false;
+        lastDistance = UnityEngine.Vector3.Distance(transform.position, nextPlanet.position);
+        failTimer = 0f;
+    }
+    
+    public LoseAnimation loseAnimation;
+
+    public void RestartGame()
+    {
+        StartCoroutine(LoseSequence());
+    }
+
+    IEnumerator LoseSequence()
+    {
+        if (loseAnimation != null)
+        {
+            yield return StartCoroutine(loseAnimation.PlayLoseAnimation());
+        }
+
+        yield return new WaitForSeconds(0.2f);
+
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

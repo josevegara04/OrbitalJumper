@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7286079760462223460}
   - component: {fileID: 4615002021570378271}
   - component: {fileID: 3038925451459789569}
+  - component: {fileID: 2198332154241218115}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -69,7 +70,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e4419358904e04876b63cdd92d89f419, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -131,6 +132,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   nextPlanet: {fileID: 0}
   cameraDistanceFactor: 5
+  dragUI: {fileID: 0}
 --- !u!135 &3038925451459789569
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -150,5 +152,18 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1
+  m_Radius: 1.25
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2198332154241218115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2629205890906707132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f41ecca45013b4c97bef629d71dda2e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlanetRotation
+  rotationSpeed: 20
