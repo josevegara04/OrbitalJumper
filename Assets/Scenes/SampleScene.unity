@@ -714,7 +714,7 @@ Light:
   serializedVersion: 13
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1.5
+  m_Intensity: 0
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1085,6 +1085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 539e139ba3f2d4552ab9b3971eb3e884, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SatelliteController
+  sun: {fileID: 1901843640}
   isOrbiting: 0
   launchPower: 0.05
   dragSensitivity: 0.01
@@ -1180,6 +1181,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 9f6b6deb3976248529bab4b9e4062d9c, type: 3}
   - {fileID: 2800000, guid: dd561c14a87a64dc4bd54377d7570cf9, type: 3}
   - {fileID: 2800000, guid: 5a265ff53890c4517b6f60130dac2964, type: 3}
+  planetNormalMaps: []
   planetPrefab: {fileID: 2629205890906707132, guid: a04423f9538014823b95c0a913022f20, type: 3}
   firstPlanet: {fileID: 297672477}
   minDistance: 10
@@ -1999,7 +2001,7 @@ Transform:
   m_GameObject: {fileID: 1901843636}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -85.47, y: 2.055, z: 76.3}
+  m_LocalPosition: {x: -263.1, y: 11.4, z: 251.5}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []

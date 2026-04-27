@@ -16,6 +16,7 @@ public class SatelliteController : MonoBehaviour
     UnityEngine.Vector3 endMousePosition;
     UnityEngine.Vector3 startSatellitePosition;
     bool isDragging = false;
+    public Transform sun;
     public bool isOrbiting = false;
     public float launchPower = 0.1f;
     public float dragSensitivity = 0.0005f;
@@ -53,6 +54,9 @@ public class SatelliteController : MonoBehaviour
 
     void Update()
     {
+        Shader.SetGlobalVector("_SunPosition", sun.position);
+        Debug.Log("Sun pos: " + sun.position);
+
         // Verificar si el satélite está orbitando en un planeta
         if (isOrbiting)
         {

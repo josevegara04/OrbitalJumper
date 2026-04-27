@@ -5,6 +5,7 @@ public class PlanetManager : MonoBehaviour
 {
     public static PlanetManager Instance;
     public Texture2D[] planetTextures;
+    public Texture2D[] planetNormalMaps;
 
     public GameObject planetPrefab;
     public GameObject firstPlanet;
@@ -37,6 +38,7 @@ public class PlanetManager : MonoBehaviour
         planets.Add(firstPlanet);
 
         planetTextures = Resources.LoadAll<Texture2D>("Textures");
+        planetNormalMaps = Resources.LoadAll<Texture2D>("NormalMaps");
         AssignRandomTexture(firstPlanet);
     }
 
@@ -110,12 +112,34 @@ public class PlanetManager : MonoBehaviour
 
         if (rend != null && planetTextures.Length > 0)
         {
-            Texture2D randomTexture = planetTextures[Random.Range(0, planetTextures.Length)];
+            // 1. escoger textura base
+            Texture2D diffuse = planetTextures[Random.Range(0, planetTextures.Length)];
 
+            // 2. buscar normal map correspondiente
+            Texture2D normal = null;
+
+            string diffuseName = diffuse.name;
+
+            foreach (Texture2D n in planetNormalMaps)
+            {
+                // Ej: Earth → Earth_normal
+                if (n.name.Contains(diffuseName))
+                {
+                    normal = n;
+                    break;
+                }
+            }
+
+            // 3. aplicar al material
             MaterialPropertyBlock block = new MaterialPropertyBlock();
             rend.GetPropertyBlock(block);
 
-            block.SetTexture("_MainTex", randomTexture);
+            block.SetTexture("_MainTex", diffuse);
+
+            if (normal != null)
+            {
+                block.SetTexture("_NormalMap", normal);
+            }
 
             rend.SetPropertyBlock(block);
         }
