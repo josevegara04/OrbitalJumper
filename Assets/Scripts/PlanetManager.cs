@@ -18,6 +18,7 @@ public class PlanetManager : MonoBehaviour
     public float maxDistanceCap = 50f; // absolute maximum distance
     public GameObject floatingTextPrefab;
     public int maxPlanets = 5;
+    int totalPlanetsSpawned;
 
     void Awake()
     {
@@ -64,12 +65,13 @@ public class PlanetManager : MonoBehaviour
         dir.Normalize();
 
         // Progressive distance (no randomness)
-        float growthFactor = planets.Count * distanceGrowth;
+        float growthFactor = totalPlanetsSpawned * distanceGrowth;
 
         float targetDistance = minDistance + growthFactor;
 
         // Clamp so it doesn't grow forever
         float distance = Mathf.Min(targetDistance, maxDistanceCap);
+        UnityEngine.Debug.Log("Distance: " + distance);
 
         Vector3 pos = lastPlanet.transform.position + dir * distance;
 
@@ -84,6 +86,8 @@ public class PlanetManager : MonoBehaviour
         if (gravity != null)
         {
             gravity.nextPlanet = newPlanet.transform;
+            totalPlanetsSpawned++;
+
         }
     }
 

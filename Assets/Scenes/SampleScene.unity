@@ -1169,10 +1169,10 @@ MonoBehaviour:
   planetPrefab: {fileID: 2629205890906707132, guid: a04423f9538014823b95c0a913022f20, type: 3}
   firstPlanet: {fileID: 297672477}
   minDistance: 10
-  maxDistance: 35
+  maxDistance: 70
   coneAngle: 40
-  distanceGrowth: 1.5
-  maxDistanceCap: 50
+  distanceGrowth: 2
+  maxDistanceCap: 100
   floatingTextPrefab: {fileID: 8577731679381825676, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
   maxPlanets: 5
 --- !u!4 &735155456
