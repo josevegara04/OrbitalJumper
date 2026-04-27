@@ -179,6 +179,7 @@ GameObject:
   - component: {fileID: 297672481}
   - component: {fileID: 297672480}
   - component: {fileID: 297672478}
+  - component: {fileID: 297672484}
   m_Layer: 0
   m_Name: First Planet
   m_TagString: FirstPlanet
@@ -318,6 +319,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &297672484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297672477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f41ecca45013b4c97bef629d71dda2e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlanetRotation
+  rotationSpeed: 20
 --- !u!1 &322776296
 GameObject:
   m_ObjectHideFlags: 0
@@ -1171,8 +1185,8 @@ MonoBehaviour:
   minDistance: 10
   maxDistance: 70
   coneAngle: 40
-  distanceGrowth: 2
-  maxDistanceCap: 100
+  distanceGrowth: 1.5
+  maxDistanceCap: 40
   floatingTextPrefab: {fileID: 8577731679381825676, guid: 269c6964debea4d2db71105a71770e9f, type: 3}
   maxPlanets: 5
 --- !u!4 &735155456
