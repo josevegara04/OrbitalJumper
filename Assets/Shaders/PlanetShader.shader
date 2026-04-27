@@ -79,14 +79,13 @@ Shader "Custom/PlanetShader"
                 );
 
                 float3 N = normalize(mul(normalTS, TBN));
-                /* float3 N = normalize(i.normalWS); */
 
-                // Obtener la luz principal (Directional Light)
+                // Light from sun object
                 float3 lightDir = _SunPosition - i.worldPos;
                 float distance = length(lightDir);
                 float3 L = normalize(lightDir);
 
-                // 🔥 atenuación (esto hace que parezca real)
+                // attenuation
                 float attenuation = 1.0 / (1.0 + 0.0001 * distance * distance);
 
                 // iluminación básica
